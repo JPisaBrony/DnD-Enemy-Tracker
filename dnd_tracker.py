@@ -1,11 +1,12 @@
-import gtk
+from random import randint
+import sys, os, gtk
 
 class Base:
     def __init__(self):
         self.builder = gtk.Builder()
         self.builder.add_from_file("dnd_tracker_layout.glade")
         self.builder.connect_signals(self)
-        
+    
     def main(self):
         self.builder.get_object("window1").show_all()
         self.store = self.builder.get_object("liststore1")
@@ -29,15 +30,16 @@ class Base:
             return
         if name == "":
             return
-        self.store.append([name, hp, loc])
+        ini = randint(1,20)
+        self.store.append([ini, name, hp, loc])
     
     def selected_new(self, widget):
         (model, pathlist) = self.tree.get_selection().get_selected_rows()
         for path in pathlist:
             iter = model.get_iter(path)
-            name = model.get_value(iter, 0)
-            hp = model.get_value(iter, 1)
-            loc = model.get_value(iter, 2)
+            name = model.get_value(iter, 1)
+            hp = model.get_value(iter, 2)
+            loc = model.get_value(iter, 3)
             self.edit_name.set_text(name)
             self.edit_hp.set_text(str(hp))
             self.edit_loc.set_text(loc)
@@ -56,9 +58,9 @@ class Base:
             if name == "":
                 return
             iter = model.get_iter(path)
-            model.set_value(iter, 0, name)
-            model.set_value(iter, 1, hp)
-            model.set_value(iter, 2, loc)
+            model.set_value(iter, 1, name)
+            model.set_value(iter, 2, hp)
+            model.set_value(iter, 3, loc)
     
     def sub_one(self, widget):
         self.sub_value(1)
@@ -76,14 +78,14 @@ class Base:
         (model, pathlist) = self.tree.get_selection().get_selected_rows()
         for path in pathlist:
             iter = model.get_iter(path)
-            hp = model.get_value(iter, 1)
-            model.set_value(iter, 1, hp - val)
+            hp = model.get_value(iter, 2)
+            model.set_value(iter, 2, hp - val)
     
     def update_hp(self):
         (model, pathlist) = self.tree.get_selection().get_selected_rows()
         for path in pathlist:
             iter = model.get_iter(path)
-            hp = model.get_value(iter, 1)
+            hp = model.get_value(iter, 2)
             self.edit_hp.set_text(str(hp))
     
     def delete_row(self, widget):
